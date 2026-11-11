@@ -18,38 +18,39 @@
   .subtitle { text-align: center; color: #666; margin-bottom: 1.5rem; font-size: 0.9rem; }
   .section-title { font-size: 1.3rem; color: var(--primary); margin: 2rem 0 1rem; padding-left: 0.5rem; border-left: 4px solid var(--accent); }
   
-  /* Star Chart */
-  .star-wrap { background: #fff; border-radius: 12px; overflow-x: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 2rem; }
-  .star-table { border-collapse: collapse; font-size: 0.7rem; min-width: 700px; }
-  .star-table th, .star-table td { border: 1px solid #e5e7eb; text-align: center; padding: 0.3rem; }
-  .star-table th { background: var(--primary); color: white; font-weight: 600; writing-mode: vertical-rl; height: 90px; font-size: 0.65rem; }
-  .star-table th:first-child { writing-mode: horizontal-tb; height: auto; }
-  .star-table td:first-child { background: var(--primary); color: white; font-weight: 600; text-align: left; padding-left: 0.5rem; white-space: nowrap; font-size: 0.75rem; }
-  .star-table .diag { background: #e5e7eb; color: #999; }
-  .cell-win { background: #dcfce7; color: #166534; font-weight: bold; }
-  .cell-lose { background: #fee2e2; color: #991b1b; font-weight: bold; }
-  .cell-draw { background: #fef9c3; color: #854d0e; font-weight: bold; }
+  /* Star Chart - larger, tighter */
+  .star-wrap { background: #fff; border-radius: 8px; overflow-x: auto; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 1.5rem; }
+  .star-table { border-collapse: collapse; font-size: 0.85rem; min-width: 100%; }
+  .star-table th, .star-table td { border: 1px solid #ddd; text-align: center; padding: 2px 1px; }
+  .star-table th { background: var(--primary); color: white; font-weight: 600; writing-mode: vertical-rl; height: 70px; font-size: 0.7rem; padding: 4px 2px; }
+  .star-table th:first-child { writing-mode: horizontal-tb; height: auto; width: 90px; }
+  .star-table td:first-child { background: var(--primary); color: white; font-weight: 600; text-align: left; padding: 4px 6px; white-space: nowrap; font-size: 0.75rem; width: 90px; }
+  .star-table .diag { background: #eee; color: #aaa; }
+  .star-table td { min-width: 42px; height: 42px; vertical-align: middle; }
+  .cell-win { background: #d1fae5; color: #065f46; }
+  .cell-lose { background: #fee2e2; color: #991b1b; }
+  .cell-draw { background: #fef3c7; color: #92400e; }
   .cell-forfeit { background: #fecaca; color: #7f1d1d; }
-  .score-line { font-size: 0.65rem; display: block; }
-  .symbol-line { font-size: 0.9rem; display: block; }
+  .score-line { font-size: 0.7rem; display: block; line-height: 1.1; font-weight: 600; }
+  .symbol-line { font-size: 1.1rem; display: block; line-height: 1; font-weight: bold; }
   
-  /* Match Cards */
+  /* Match Cards - alternating by date */
   .match-card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 0.9rem 1.1rem;
-    margin-bottom: 0.6rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.4rem;
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.6rem;
     flex-wrap: wrap;
   }
-  .match-date { font-size: 0.8rem; color: #888; min-width: 85px; }
+  .match-card.bg1 { background: #ffffff; }
+  .match-card.bg2 { background: #f3f4f6; }
+  .match-date { font-size: 0.8rem; color: #666; min-width: 80px; }
   .match-teams { flex: 1; font-weight: 600; text-align: center; }
-  .match-score { font-size: 1.3rem; font-weight: bold; color: var(--primary); min-width: 65px; text-align: right; }
+  .match-score { font-size: 1.25rem; font-weight: bold; color: var(--primary); min-width: 60px; text-align: right; }
   .match-note { font-size: 0.7rem; color: #c8102e; width: 100%; text-align: center; }
-  .forfeit { border-left: 3px solid #c8102e; background: #fef2f2; }
+  .forfeit { border-left: 3px solid #c8102e; }
   .btn { display: inline-block; background: var(--accent); color: white; padding: 0.7rem 1.8rem; border-radius: 8px; text-decoration: none; margin-top: 1.5rem; }
   #loading { text-align: center; padding: 2rem; color: #666; }
   footer { background: var(--dark); color: #aaa; text-align: center; padding: 1.5rem; font-size: 0.85rem; margin-top: 2rem; }
@@ -156,9 +157,16 @@ async function loadAll() {
     matches.sort((a, b) => b.date.localeCompare(a.date));
     
     let matchHtml = '';
+    let lastDate = '';
+    let colorIdx = 0;
     matches.forEach(m => {
+      if (m.date !== lastDate) {
+        colorIdx = 1 - colorIdx;
+        lastDate = m.date;
+      }
+      const bgClass = colorIdx === 0 ? 'bg1' : 'bg2';
       const isForfeit = m.forfeit && m.forfeit.length > 0;
-      matchHtml += `<div class="match-card${isForfeit ? ' forfeit' : ''}">
+      matchHtml += `<div class="match-card ${bgClass}${isForfeit ? ' forfeit' : ''}">
         <div class="match-date">${m.date}</div>
         <div class="match-teams">${m.home} <span style="color:#999;font-weight:400;">vs</span> ${m.away}</div>
         <div class="match-score">${m.hs} - ${m.as}</div>
