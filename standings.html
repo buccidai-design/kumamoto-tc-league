@@ -5,67 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>順位表 | 熊本TCリーグ</title>
 <style>
-  :root {
-    --primary: #1a3a5c;
-    --accent: #c8102e;
-    --gold: #d4af37;
-    --light: #f8f5f0;
-    --dark: #0f1c2e;
-  }
+  :root { --primary: #1a3a5c; --accent: #c8102e; --gold: #d4af37; --light: #f8f5f0; --dark: #0f1c2e; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
-    color: #333;
-    background: var(--light);
-    line-height: 1.7;
-  }
-  header {
-    background: var(--dark);
-    color: white;
-    padding: 1rem 2rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .logo { font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; }
-  .logo span { color: var(--gold); }
-  nav a {
-    color: white;
-    text-decoration: none;
-    margin-left: 1.5rem;
-    font-size: 0.95rem;
-  }
+  body { font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif; background: var(--light); color: #333; line-height: 1.6; }
+  header { background: var(--dark); color: white; padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-size: 1.5rem; font-weight: 700; } .logo span { color: var(--gold); }
+  nav a { color: white; text-decoration: none; margin-left: 1.5rem; }
   nav a:hover { color: var(--gold); }
-  .container { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
-  h2 { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; text-align: center; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1rem; }
+  h2 { text-align: center; color: var(--primary); margin-bottom: 0.5rem; }
   .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
-  .btn {
-    display: inline-block;
-    background: var(--accent);
-    color: white;
-    padding: 0.8rem 2rem;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-  }
-  footer {
-    background: var(--dark);
-    color: #aaa;
-    text-align: center;
-    padding: 2rem;
-    font-size: 0.9rem;
-  }
+  .sheet-wrap { width: 100%; height: 700px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: #fff; }
+  .sheet-wrap iframe { width: 100%; height: 100%; border: none; }
+  .btn { display: inline-block; background: var(--accent); color: white; padding: 0.7rem 1.8rem; border-radius: 8px; text-decoration: none; margin-top: 2rem; }
+  footer { background: var(--dark); color: #aaa; text-align: center; padding: 1.5rem; font-size: 0.85rem; }
 </style>
 </head>
 <body>
-
 <header>
   <div class="header-inner">
     <div class="logo">熊本<span>TC</span>リーグ</div>
@@ -80,71 +37,14 @@
 <section>
   <div class="container">
     <h2>2026年度 順位表</h2>
-    <p class="subtitle">熊本TCリーグ 現在の順位</p>
-    
-    <div style="overflow-x:auto;">
-      <table style="width:100%; border-collapse:collapse; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
-        <thead>
-          <tr style="background:#1a3a5c; color:white;">
-            <th style="padding:1rem; text-align:center;">順位</th>
-            <th style="padding:1rem; text-align:left;">チーム</th>
-            <th style="padding:1rem; text-align:center;">試合</th>
-            <th style="padding:1rem; text-align:center;">勝</th>
-            <th style="padding:1rem; text-align:center;">負</th>
-            <th style="padding:1rem; text-align:center;">分</th>
-            <th style="padding:1rem; text-align:center;">勝率</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr style="border-bottom:1px solid #eee;">
-            <td style="padding:1rem; text-align:center; font-weight:bold;">1</td>
-            <td style="padding:1rem;">船場アバウティーズ</td>
-            <td style="padding:1rem; text-align:center;">8</td>
-            <td style="padding:1rem; text-align:center;">6</td>
-            <td style="padding:1rem; text-align:center;">2</td>
-            <td style="padding:1rem; text-align:center;">0</td>
-            <td style="padding:1rem; text-align:center;">.750</td>
-          </tr>
-          <tr style="border-bottom:1px solid #eee; background:#f9f9f9;">
-            <td style="padding:1rem; text-align:center; font-weight:bold;">2</td>
-            <td style="padding:1rem;">RAYGUNS</td>
-            <td style="padding:1rem; text-align:center;">8</td>
-            <td style="padding:1rem; text-align:center;">5</td>
-            <td style="padding:1rem; text-align:center;">3</td>
-            <td style="padding:1rem; text-align:center;">0</td>
-            <td style="padding:1rem; text-align:center;">.625</td>
-          </tr>
-          <tr style="border-bottom:1px solid #eee;">
-            <td style="padding:1rem; text-align:center; font-weight:bold;">3</td>
-            <td style="padding:1rem;">バリーズ</td>
-            <td style="padding:1rem; text-align:center;">8</td>
-            <td style="padding:1rem; text-align:center;">5</td>
-            <td style="padding:1rem; text-align:center;">3</td>
-            <td style="padding:1rem; text-align:center;">0</td>
-            <td style="padding:1rem; text-align:center;">.625</td>
-          </tr>
-          <tr style="background:#f9f9f9;">
-            <td style="padding:1rem; text-align:center;">4</td>
-            <td style="padding:1rem;">TOLUCKY</td>
-            <td style="padding:1rem; text-align:center;">8</td>
-            <td style="padding:1rem; text-align:center;">4</td>
-            <td style="padding:1rem; text-align:center;">4</td>
-            <td style="padding:1rem; text-align:center;">0</td>
-            <td style="padding:1rem; text-align:center;">.500</td>
-          </tr>
-        </tbody>
-      </table>
+    <p class="subtitle">勝ち点・得失点差で自動計算</p>
+    <div class="sheet-wrap">
+      <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTwrC69Dx14x-sBLSlvg-2rPIaUIhiUVAxATe0hwLHkS_7-cV-8aTPAI3pqoxtz5g/pubhtml?gid=68756592&single=true&widget=true&headers=false"></iframe>
     </div>
-
-    <p style="text-align:center; margin-top:2.5rem;">
-      <a href="index.html" class="btn">トップページに戻る</a>
-    </p>
+    <p style="text-align:center;"><a href="index.html" class="btn">トップページに戻る</a></p>
   </div>
 </section>
 
-<footer>
-  <p>© 2026 熊本TCリーグ | 熊本市内の草野球リーグ</p>
-</footer>
-
+<footer>© 2026 熊本TCリーグ</footer>
 </body>
 </html>
