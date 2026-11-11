@@ -26,13 +26,10 @@
   .star-table th:first-child { writing-mode: horizontal-tb; height: auto; width: 90px; }
   .star-table td:first-child { background: var(--primary); color: white; font-weight: 600; text-align: left; padding: 4px 6px; white-space: nowrap; font-size: 0.75rem; width: 90px; }
   .star-table .diag { background: #eee; color: #aaa; }
-  .star-table td { min-width: 42px; height: 42px; vertical-align: middle; }
-  .cell-win { background: #d1fae5; color: #065f46; }
-  .cell-lose { background: #fee2e2; color: #991b1b; }
-  .cell-draw { background: #fef3c7; color: #92400e; }
-  .cell-forfeit { background: #fecaca; color: #7f1d1d; }
-  .score-line { font-size: 0.7rem; display: block; line-height: 1.1; font-weight: 600; }
-  .symbol-line { font-size: 1.1rem; display: block; line-height: 1; font-weight: bold; }
+  .star-table td { min-width: 48px; height: 48px; vertical-align: middle; padding: 1px; }
+  .score-line { font-size: 0.65rem; display: block; line-height: 1.1; font-weight: 700; color: #333; }
+  .symbol-line { font-size: 1.15rem; display: block; line-height: 1; font-weight: bold; margin-top: 1px; }
+  .diag { background: #d1d5db !important; color: #6b7280; font-size: 1rem; }
   
   /* Match Cards - alternating by date */
   .match-card {
@@ -106,38 +103,70 @@ async function loadAll() {
     const starText = await starRes.text();
     const matchText = await matchRes.text();
     
-    // Parse star chart
+    // Parse star chart properly (handle quoted multiline cells)
     const starLines = starText.trim().split('\n');
     const headerLine = starLines.find(l => l.includes('TOLUCKY') && l.includes('CHASERS'));
-    const teams = headerLine.split(',').slice(1).map(t => t.replace(/"/g, '').trim()).filter(t => t);
+    const teams = headerLine.split(',').slice(1).map(t => t.replace(/"/g, '').trim()).filter(t => t && t.length > 1);
+    
+    // Better CSV parse for multiline
+    function parseCSVLine(text) {
+      const rows = [];
+      let current = '';
+      let inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if (c === '"') { inQuotes = !inQuotes; }
+        else if (c === '\n' && !inQuotes) { rows.push(current); current = ''; }
+        else { current += c; }
+      }
+      if (current) rows.push(current);
+      return rows.map(row => {
+        const cols = [];
+        let col = '';
+        let q = false;
+        for (let i = 0; i < row.length; i++) {
+          const c = row[i];
+          if (c === '"') { q = !q; }
+          else if (c === ',' && !q) { cols.push(col.trim()); col = ''; }
+          else { col += c; }
+        }
+        cols.push(col.trim());
+        return cols;
+      });
+    }
+    const parsedRows = parseCSVLine(starText);
     
     let starHtml = '<table class="star-table"><thead><tr><th>チーム</th>';
     teams.forEach(t => starHtml += `<th>${t}</th>`);
     starHtml += '</tr></thead><tbody>';
     
-    starLines.forEach(line => {
-      const cols = line.split(',').map(c => c.replace(/^"|"$/g, '').replace(/\n/g, ' ').trim());
+    parsedRows.forEach(cols => {
       const team = cols[0];
       if (!teams.includes(team)) return;
+      const teamIdx = teams.indexOf(team);
       
       starHtml += `<tr><td>${team}</td>`;
-      for (let i = 1; i <= teams.length; i++) {
-        const cell = cols[i] || '';
-        if (cell === '—' || cell === '-') {
+      for (let i = 0; i < teams.length; i++) {
+        if (i === teamIdx) {
           starHtml += '<td class="diag">—</td>';
+          continue;
+        }
+        const cell = (cols[i + 1] || '').replace(/\n/g, ' ').trim();
+        if (!cell || cell === '—' || cell === '-') {
+          starHtml += '<td></td>';
         } else if (cell.includes('○')) {
-          const score = cell.split('○')[0].trim();
+          const score = cell.replace('○', '').trim();
           starHtml += `<td class="cell-win"><span class="score-line">${score}</span><span class="symbol-line">○</span></td>`;
         } else if (cell.includes('●')) {
-          const score = cell.split('●')[0].trim();
+          const score = cell.replace('●', '').trim();
           starHtml += `<td class="cell-lose"><span class="score-line">${score}</span><span class="symbol-line">●</span></td>`;
         } else if (cell.includes('△')) {
-          const score = cell.split('△')[0].trim();
+          const score = cell.replace('△', '').trim();
           starHtml += `<td class="cell-draw"><span class="score-line">${score}</span><span class="symbol-line">△</span></td>`;
         } else if (cell.includes('不')) {
-          starHtml += `<td class="cell-forfeit"><span class="symbol-line">不</span></td>`;
+          starHtml += `<td class="cell-forfeit"><span class="score-line">不戦</span><span class="symbol-line">不</span></td>`;
         } else {
-          starHtml += '<td></td>';
+          starHtml += `<td><span class="score-line">${cell}</span></td>`;
         }
       }
       starHtml += '</tr>';
