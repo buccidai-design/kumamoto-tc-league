@@ -13,13 +13,34 @@
   .logo { font-size: 1.5rem; font-weight: 700; } .logo span { color: var(--gold); }
   nav a { color: white; text-decoration: none; margin-left: 1.5rem; }
   nav a:hover { color: var(--gold); }
-  .container { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1rem; }
-  h2 { text-align: center; color: var(--primary); margin-bottom: 0.5rem; }
-  .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
-  .sheet-wrap { width: 100%; height: 700px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: #fff; }
-  .sheet-wrap iframe { width: 100%; height: 100%; border: none; }
-  .btn { display: inline-block; background: var(--accent); color: white; padding: 0.7rem 1.8rem; border-radius: 8px; text-decoration: none; margin-top: 2rem; }
-  footer { background: var(--dark); color: #aaa; text-align: center; padding: 1.5rem; font-size: 0.85rem; }
+  .container { max-width: 800px; margin: 0 auto; padding: 2.5rem 1rem; }
+  h2 { text-align: center; color: var(--primary); margin-bottom: 0.3rem; }
+  .subtitle { text-align: center; color: #666; margin-bottom: 2rem; font-size: 0.95rem; }
+  .match-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .match-date { font-size: 0.85rem; color: #888; min-width: 90px; }
+  .match-teams { flex: 1; font-weight: 600; text-align: center; }
+  .match-score { font-size: 1.4rem; font-weight: bold; color: var(--primary); min-width: 70px; text-align: right; }
+  .match-note { font-size: 0.75rem; color: #c8102e; width: 100%; text-align: center; margin-top: 0.3rem; }
+  .win { color: #16a34a; }
+  .lose { color: #dc2626; }
+  .draw { color: #ca8a04; }
+  .forfeit { background: #fef2f2; border-left: 3px solid #c8102e; }
+  .btn { display: inline-block; background: var(--accent); color: white; padding: 0.7rem 1.8rem; border-radius: 8px; text-decoration: none; margin-top: 1.5rem; }
+  #loading { text-align: center; padding: 3rem; color: #666; }
+  footer { background: var(--dark); color: #aaa; text-align: center; padding: 1.5rem; font-size: 0.85rem; margin-top: 2rem; }
+  .tabs { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .tab { padding: 0.5rem 1.2rem; border-radius: 20px; background: #e5e7eb; cursor: pointer; font-size: 0.9rem; }
+  .tab.active { background: var(--primary); color: white; }
 </style>
 </head>
 <body>
@@ -36,22 +57,58 @@
 
 <section>
   <div class="container">
-    <h2>試合結果・星取表</h2>
+    <h2>試合結果</h2>
     <p class="subtitle">2026年度</p>
-    
-    <h3 style="margin:2rem 0 1rem; color:#1a3a5c; font-size:1.2rem;">星取表</h3>
-    <div class="sheet-wrap">
-      <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTwrC69Dx14x-sBLSlvg-2rPIaUIhiUVAxATe0hwLHkS_7-cV-8aTPAI3pqoxtz5g/pubhtml?gid=1671521405&single=true&widget=true&headers=false"></iframe>
-    </div>
-
-    <h3 style="margin:2.5rem 0 1rem; color:#1a3a5c; font-size:1.2rem;">試合結果</h3>
-    <div class="sheet-wrap">
-      <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTwrC69Dx14x-sBLSlvg-2rPIaUIhiUVAxATe0hwLHkS_7-cV-8aTPAI3pqoxtz5g/pubhtml?gid=986954126&single=true&widget=true&headers=false"></iframe>
-    </div>
+    <div id="loading">読み込み中...</div>
+    <div id="matches"></div>
     <p style="text-align:center;"><a href="index.html" class="btn">トップページに戻る</a></p>
   </div>
 </section>
 
 <footer>© 2026 熊本TCリーグ</footer>
+
+<script>
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwrC69Dx14x-sBLSlvg-2rPIaUIhiUVAxATe0hwLHkS_7-cV-8aTPAI3pqoxtz5g/pub?gid=1671521405&single=true&output=csv';
+
+async function loadResults() {
+  try {
+    const res = await fetch(CSV_URL);
+    const text = await res.text();
+    const rows = text.trim().split('\n').slice(1); // skip header
+    
+    let html = '';
+    rows.forEach(line => {
+      const cols = line.split(',').map(c => c.replace(/^"|"$/g, '').trim());
+      const [date, home, away, homeScore, awayScore, forfeit, note] = cols;
+      if (!date || !home || !away || homeScore === '' || awayScore === '') return;
+      
+      const hs = parseInt(homeScore) || 0;
+      const as = parseInt(awayScore) || 0;
+      const isForfeit = forfeit && forfeit.length > 0;
+      
+      let scoreClass = '';
+      if (!isForfeit) {
+        if (hs > as) scoreClass = 'win';
+        else if (hs < as) scoreClass = 'lose';
+        else scoreClass = 'draw';
+      }
+      
+      html += `<div class="match-card${isForfeit ? ' forfeit' : ''}">
+        <div class="match-date">${date}</div>
+        <div class="match-teams">${home} <span style="color:#999; font-weight:400;">vs</span> ${away}</div>
+        <div class="match-score ${scoreClass}">${hs} - ${as}</div>
+        ${isForfeit ? `<div class="match-note">不戦敗（${forfeit}）</div>` : ''}
+        ${note && !isForfeit ? `<div class="match-note">${note}</div>` : ''}
+      </div>`;
+    });
+    
+    document.getElementById('matches').innerHTML = html || '<p style="text-align:center; color:#666;">試合結果がありません</p>';
+    document.getElementById('loading').style.display = 'none';
+  } catch (e) {
+    document.getElementById('loading').textContent = 'データの読み込みに失敗しました';
+  }
+}
+loadResults();
+</script>
 </body>
 </html>
