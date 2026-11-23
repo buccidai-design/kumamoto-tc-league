@@ -20,6 +20,11 @@
   .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
   .team-photo { max-width: 700px; margin: 2rem auto; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
   .team-photo img { width: 100%; height: auto; display: block; }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 2rem 0; }
+  .gallery-item { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+  .gallery-item img { width: 100%; height: 250px; object-fit: cover; display: block; transition: transform 0.3s; }
+  .gallery-item img:hover { transform: scale(1.03); }
+  .gallery-caption { background: white; padding: 0.6rem; text-align: center; font-size: 0.85rem; color: #555; }
   .content { background: white; border-radius: 12px; padding: 2rem; margin: 1.5rem 0; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
   .content h3 { color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; }
   .content p { margin-bottom: 1rem; }
@@ -62,7 +67,7 @@
     <p class="subtitle">40歳以上のメンバーが集うベテランチーム</p>
     
     <div class="team-photo">
-      <img src="kareishu_team.jpg" alt="華麗衆 集合写真">
+      <img src="kareishu_group.jpg" alt="華麗衆 集合写真（第19回読売トクヤマ親善野球大会）">
     </div>
 
     <div class="content">
@@ -70,6 +75,22 @@
       <p>TCリーグ各チームの40歳以上メンバーが集い、経験と技術を活かしたプレーを楽しむサブグループです。</p>
       <p>ベテランならではの読み合いと、若いチームとはまた違う味わい深い試合を展開しています。</p>
       <p>年齢を重ねても野球を楽しみたいという思いを持つ選手たちが、それぞれの経験を持ち寄り、楽しく競い合っています。</p>
+    </div>
+
+    <h3 style="text-align:center; color:var(--primary); margin:2rem 0 1rem;">活動の様子</h3>
+    <div class="gallery">
+      <div class="gallery-item">
+        <img src="kareishu_player25_sky.jpg" alt="華麗衆 選手">
+        <div class="gallery-caption">試合後の一コマ</div>
+      </div>
+      <div class="gallery-item">
+        <img src="kareishu_player23.jpg" alt="華麗衆 打席">
+        <div class="gallery-caption">打席での集中</div>
+      </div>
+      <div class="gallery-item">
+        <img src="kareishu_player25_glove.jpg" alt="華麗衆 準備">
+        <div class="gallery-caption">打席に立つ前の準備</div>
+      </div>
     </div>
 
     <div class="content">
