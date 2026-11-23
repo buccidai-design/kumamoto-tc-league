@@ -24,7 +24,13 @@
   .gallery-item { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
   .gallery-item img { width: 100%; height: 250px; object-fit: cover; display: block; transition: transform 0.3s; }
   .gallery-item img:hover { transform: scale(1.03); }
-  .gallery-caption { background: white; padding: 0.6rem; text-align: center; font-size: 0.85rem; color: #555; }
+  .results-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  .results-table th { background: var(--primary); color: white; padding: 0.7rem; font-size: 0.85rem; }
+  .results-table td { padding: 0.6rem; text-align: center; border-bottom: 1px solid #eee; }
+  .results-table tr:nth-child(even) { background: #f9f9f9; }
+  .win { color: #16a34a; font-weight: bold; }
+  .lose { color: #dc2626; }
+  .draw { color: #d97706; }
   .content { background: white; border-radius: 12px; padding: 2rem; margin: 1.5rem 0; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
   .content h3 { color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; }
   .content p { margin-bottom: 1rem; }
@@ -98,6 +104,40 @@
       <p>華麗衆はTCリーグの各チームから集まったメンバーで構成されています。</p>
       <p>普段は各チームでプレーしている選手たちが、華麗衆として集結し、特別な試合を行います。</p>
       <p>技術と経験を活かした戦略的な野球を楽しみながら、世代を超えた交流の場としても機能しています。</p>
+    </div>
+
+    <div class="content">
+      <h3>試合結果</h3>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>日付</th>
+            <th>対戦相手</th>
+            <th>スコア</th>
+            <th>結果</th>
+            <th>備考</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2025/11/23</td>
+            <td>第19回読売トクヤマ親善野球大会</td>
+            <td>—</td>
+            <td class="win">優勝</td>
+            <td>集合写真の大会</td>
+          </tr>
+          <!-- 試合結果を追加する場合は、以下の形式で行を追加してください
+          <tr>
+            <td>2026/00/00</td>
+            <td>対戦相手名</td>
+            <td>5 - 3</td>
+            <td class="win">○</td>
+            <td>備考</td>
+          </tr>
+          -->
+        </tbody>
+      </table>
+      <p style="font-size:0.8rem; color:#888; margin-top:0.5rem;">※試合結果は随時更新されます</p>
     </div>
 
     <p style="text-align:center; margin-top:2rem;">
