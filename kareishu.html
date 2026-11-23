@@ -30,7 +30,8 @@
   .results-table tr:nth-child(even) { background: #f9f9f9; }
   .win { color: #16a34a; font-weight: bold; }
   .lose { color: #dc2626; }
-  .draw { color: #d97706; }
+  .match-photo { max-width: 400px; margin: 0.5rem auto; border-radius: 8px; overflow: hidden; }
+  .match-photo img { width: 100%; height: auto; display: block; }
   .content { background: white; border-radius: 12px; padding: 2rem; margin: 1.5rem 0; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
   .content h3 { color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; }
   .content p { margin-bottom: 1rem; }
@@ -108,36 +109,9 @@
 
     <div class="content">
       <h3>試合結果</h3>
-      <table class="results-table">
-        <thead>
-          <tr>
-            <th>日付</th>
-            <th>対戦相手</th>
-            <th>スコア</th>
-            <th>結果</th>
-            <th>備考</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>2025/11/23</td>
-            <td>第19回読売トクヤマ親善野球大会</td>
-            <td>—</td>
-            <td class="win">優勝</td>
-            <td>集合写真の大会</td>
-          </tr>
-          <!-- 試合結果を追加する場合は、以下の形式で行を追加してください
-          <tr>
-            <td>2026/00/00</td>
-            <td>対戦相手名</td>
-            <td>5 - 3</td>
-            <td class="win">○</td>
-            <td>備考</td>
-          </tr>
-          -->
-        </tbody>
-      </table>
-      <p style="font-size:0.8rem; color:#888; margin-top:0.5rem;">※試合結果は随時更新されます</p>
+      <div id="results-loading">読み込み中...</div>
+      <div id="results-container"></div>
+      <p style="font-size:0.8rem; color:#888; margin-top:0.5rem;">※スプレッドシートから自動取得</p>
     </div>
 
     <p style="text-align:center; margin-top:2rem;">
@@ -147,6 +121,86 @@
 </section>
 
 <footer>© 2026 熊本TCリーグ</footer>
+
+<script>
+// 華麗衆の試合結果スプレッドシートURL（公開CSV）
+// ※このURLは後で実際のスプレッドシートのURLに置き換えてください
+const KAREISHU_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTuEXvuD_CJIU1qXwP5oqnNk1ijucfeQSsIV23pJiXa8ExeMyicorFrdPNKko9Q7mYivMQ-kW0fppsL/pub?gid=0&single=true&output=csv';
+
+async function loadKareishuResults() {
+  try {
+    const res = await fetch(KAREISHU_CSV);
+    const text = await res.text();
+    const lines = text.trim().split('\n');
+    
+    let startIdx = -1;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes('日付') && lines[i].includes('対戦')) {
+        startIdx = i + 1;
+        break;
+      }
+    }
+    if (startIdx === -1) startIdx = 1;
+    
+    let tableHtml = `<table class="results-table">
+      <thead><tr>
+        <th>日付</th><th>対戦相手</th><th>スコア</th><th>結果</th><th>備考</th>
+      </tr></thead><tbody>`;
+    
+    let photosHtml = '';
+    
+    for (let i = startIdx; i < lines.length; i++) {
+      const cols = lines[i].split(',').map(c => c.replace(/^"|"$/g, '').trim());
+      if (cols.length < 3 || !cols[0]) continue;
+      
+      const date = cols[0] || '';
+      const opponent = cols[1] || '';
+      const score = cols[2] || '';
+      const result = cols[3] || '';
+      const note = cols[4] || '';
+      const photoUrl = cols[5] || '';
+      
+      let resultClass = '';
+      if (result.includes('勝') || result === '○' || result.includes('優勝')) resultClass = 'win';
+      else if (result.includes('負') || result === '●') resultClass = 'lose';
+      else if (result.includes('分') || result === '△') resultClass = 'draw';
+      
+      tableHtml += `<tr>
+        <td>${date}</td>
+        <td>${opponent}</td>
+        <td>${score}</td>
+        <td class="${resultClass}">${result}</td>
+        <td>${note}</td>
+      </tr>`;
+      
+      // Add photo if URL exists
+      if (photoUrl) {
+        const imgSrc = photoUrl.startsWith('http') ? photoUrl : photoUrl;
+        photosHtml += `<div class="match-photo">
+          <img src="${imgSrc}" alt="${opponent} ${date}">
+          <p style="text-align:center; font-size:0.8rem; color:#666; margin-top:0.3rem;">${date} ${opponent}</p>
+        </div>`;
+      }
+    }
+    
+    tableHtml += '</tbody></table>';
+    
+    if (tableHtml.includes('<tr>')) {
+      let container = tableHtml;
+      if (photosHtml) {
+        container += `<h4 style="margin-top:1.5rem; color:var(--primary);">試合の写真</h4>${photosHtml}`;
+      }
+      document.getElementById('results-container').innerHTML = container;
+      document.getElementById('results-loading').style.display = 'none';
+    } else {
+      document.getElementById('results-loading').textContent = '試合結果はまだありません';
+    }
+  } catch (e) {
+    document.getElementById('results-loading').textContent = 'データを読み込めませんでした';
+  }
+}
+loadKareishuResults();
+</script>
 
 </body>
 </html>
