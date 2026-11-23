@@ -34,9 +34,23 @@
   .btn { display: inline-block; background: var(--accent); color: white; padding: 0.7rem 1.8rem; border-radius: 8px; text-decoration: none; margin-top: 1.5rem; }
   #loading { text-align: center; padding: 3rem; color: #666; }
   footer { background: var(--dark); color: #aaa; text-align: center; padding: 1.5rem; font-size: 0.85rem; margin-top: 2rem; }
-  @media (max-width: 600px) {
-    th, td { padding: 0.5rem 0.3rem; font-size: 0.8rem; }
-    .team-name { padding-left: 0.5rem; }
+  @media (max-width: 768px) {
+    header { padding: 0.8rem 1rem; }
+    .logo { font-size: 1.1rem; }
+    nav { display: none; }
+    section { padding: 3rem 0.8rem; }
+    .container { padding: 1.5rem 0.5rem; }
+    h2 { font-size: 1.4rem; }
+    .subtitle { font-size: 0.85rem; }
+    th, td { padding: 0.5rem 0.25rem; font-size: 0.75rem; }
+    .team-name { padding-left: 0.4rem; font-size: 0.75rem; }
+    .rank { font-size: 0.95rem; }
+    .points { font-size: 0.95rem; }
+    .table-wrap { border-radius: 8px; overflow-x: auto; }
+  }
+  @media (min-width: 769px) and (max-width: 1024px) {
+    th, td { padding: 0.7rem 0.4rem; font-size: 0.85rem; }
+    nav a { margin-left: 1rem; }
   }
 </style>
 </head>
@@ -72,7 +86,7 @@
 <footer>© 2026 熊本TCリーグ</footer>
 
 <script>
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwrC69Dx14x-sBLSlvg-2rPIaUIhiUVAxATe0hwLHkS_7-cV-8aTPAI3pqoxtz5g/pub?gid=68756592&single=true&output=csv';
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTuEXvuD_CJIU1qXwP5oqnNk1ijucfeQSsIV23pJiXa8ExeMyicorFrdPNKko9Q7mYivMQ-kW0fppsL/pub?gid=1970850898&single=true&output=csv';
 
 async function loadStandings() {
   try {
@@ -80,16 +94,18 @@ async function loadStandings() {
     const text = await res.text();
     const lines = text.trim().split('\n');
     
-    // Find the sorted section (second table starting with 順位,チーム)
+    // Find header row
     let startIdx = -1;
-    let count = 0;
     for (let i = 0; i < lines.length; i++) {
       if (lines[i].startsWith('順位,チーム')) {
-        count++;
-        if (count === 2) { startIdx = i + 1; break; }
+        startIdx = i + 1;
+        break;
       }
     }
-    if (startIdx === -1) startIdx = 3; // fallback
+    if (startIdx === -1) {
+      document.getElementById('loading').textContent = 'データ形式が不正です';
+      return;
+    }
     
     let html = `<table>
       <thead><tr>
