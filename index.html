@@ -195,9 +195,31 @@
   footer a { color: var(--gold); text-decoration: none; }
 
   @media (max-width: 768px) {
-    .hero h1 { font-size: 2.2rem; }
-    .hero { height: 60vh; }
+    .hero h1 { font-size: 1.8rem; letter-spacing: 2px; }
+    .hero p { font-size: 1rem; }
+    .hero { height: 50vh; min-height: 350px; }
     nav { display: none; }
+    header { padding: 0.8rem 1rem; }
+    .logo { font-size: 1.2rem; }
+    section { padding: 3rem 1rem; }
+    h2 { font-size: 1.6rem; }
+    .teams-grid { grid-template-columns: 1fr; gap: 1.2rem; }
+    .team-header { height: 100px; font-size: 1.2rem; }
+    .team-body { padding: 1.2rem; }
+    .team-body p { font-size: 0.88rem; }
+    .subtitle { font-size: 0.95rem; margin-bottom: 2rem; }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .hero h1 { font-size: 2.5rem; }
+    .teams-grid { grid-template-columns: repeat(2, 1fr); }
+    section { padding: 4rem 1.5rem; }
+    nav a { margin-left: 1rem; font-size: 0.9rem; }
+  }
+
+  @media (min-width: 1025px) {
+    .hero h1 { font-size: 3.2rem; }
+    .teams-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
   }
 </style>
 </head>
@@ -226,6 +248,10 @@
     <h1>熊本TCリーグ</h1>
     <p>熊本市内で熱く戦う、大人たちの草野球リーグ</p>
     <a href="#teams" class="btn">参加チームを見る</a>
+    <div style="margin-top: 1.2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a href="results.html" class="btn" style="background: #1a3a5c;">試合結果</a>
+      <a href="standings.html" class="btn" style="background: #2d5a27;">順位表</a>
+    </div>
   </div>
 </section>
 
