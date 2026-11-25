@@ -162,7 +162,7 @@ async function loadKareishuResults() {
       const photoUrl = cols[5] || '';
       
       // Skip instruction rows and empty rows
-      if (!date || date.includes('【') || date.startsWith('・') || date.includes('入力ルール')) continue;
+      if (!date || date.includes('【') || date.startsWith('・') || date.includes('入力ルール') || date.includes('例：') || date.includes('例:')) continue;
       
       let resultClass = '';
       if (result.includes('勝') || result === '○' || result.includes('優勝')) resultClass = 'win';
