@@ -29,7 +29,8 @@
   .results-table td { padding: 0.6rem; text-align: center; border-bottom: 1px solid #eee; }
   .results-table tr:nth-child(even) { background: #f9f9f9; }
   .win { color: #16a34a; font-weight: bold; }
-  .lose { color: #dc2626; }
+  .lose { color: #000; font-weight: bold; }
+  .draw { color: #d97706; }
   .match-photo { max-width: 400px; margin: 0.5rem auto; border-radius: 8px; overflow: hidden; }
   .match-photo img { width: 100%; height: auto; display: block; }
   .content { background: white; border-radius: 12px; padding: 2rem; margin: 1.5rem 0; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
@@ -159,6 +160,9 @@ async function loadKareishuResults() {
       const result = cols[3] || '';
       const note = cols[4] || '';
       const photoUrl = cols[5] || '';
+      
+      // Skip instruction rows and empty rows
+      if (!date || date.includes('【') || date.startsWith('・') || date.includes('入力ルール')) continue;
       
       let resultClass = '';
       if (result.includes('勝') || result === '○' || result.includes('優勝')) resultClass = 'win';
