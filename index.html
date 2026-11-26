@@ -244,6 +244,10 @@
   </div>
 </header>
 
+<div id="visitor-counter" style="background:#1a3a5c; color:#d4af37; text-align:center; padding:0.4rem; font-size:0.85rem; letter-spacing:1px;">
+  閲覧者数：<span id="count">---</span>
+</div>
+
 <section class="hero">
   <div class="hero-content">
     <h1>熊本TCリーグ</h1>
@@ -472,6 +476,16 @@
 
   // Change every 5 seconds
   setInterval(changeHeroBackground, 5000);
+
+  // Visitor counter (CountAPI)
+  fetch('https://api.countapi.xyz/hit/kumamoto-tc-league/visits')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('count').textContent = data.value.toLocaleString();
+    })
+    .catch(() => {
+      document.getElementById('count').textContent = '-';
+    });
 </script>
 
 </body>
