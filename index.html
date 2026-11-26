@@ -245,7 +245,7 @@
 </header>
 
 <div id="visitor-counter" style="background:#1a3a5c; color:#d4af37; text-align:center; padding:0.4rem; font-size:0.85rem; letter-spacing:1px;">
-  閲覧者数：<span id="count">---</span>
+  閲覧者数：<img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fbuccidai-design.github.io%2Fkumamoto-tc-league&count_bg=%231A3A5C&title_bg=%23D4AF37&icon=&icon_color=%23E7E7E7&title=views&edge_flat=false" style="vertical-align:middle; height:20px; margin-left:4px;" alt="visitor count">
 </div>
 
 <section class="hero">
@@ -476,16 +476,6 @@
 
   // Change every 5 seconds
   setInterval(changeHeroBackground, 5000);
-
-  // Visitor counter (CountAPI)
-  fetch('https://api.countapi.xyz/hit/kumamoto-tc-league/visits')
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('count').textContent = data.value.toLocaleString();
-    })
-    .catch(() => {
-      document.getElementById('count').textContent = '-';
-    });
 </script>
 
 </body>
