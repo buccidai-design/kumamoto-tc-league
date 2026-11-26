@@ -245,18 +245,14 @@
 </header>
 
 <div id="visitor-counter" style="background:#1a3a5c; color:#d4af37; text-align:center; padding:0.5rem; font-size:0.95rem; font-weight:600;">
-  閲覧者数：<span id="visit-count">読み込み中...</span>
+  閲覧者数：<span id="visit-count">0</span>
 </div>
 <script>
 (function(){
   var key = 'tc_league_visits';
   var count = parseInt(localStorage.getItem(key) || '0') + 1;
   localStorage.setItem(key, count);
-  // Also try to get global count from a simple API
-  fetch('https://api.counterapi.dev/v1/buccidai/kumamoto-tc/up')
-    .then(function(r){ return r.json(); })
-    .then(function(d){ document.getElementById('visit-count').textContent = (d.count || count).toLocaleString(); })
-    .catch(function(){ document.getElementById('visit-count').textContent = count.toLocaleString(); });
+  document.getElementById('visit-count').textContent = count.toLocaleString();
 })();
 </script>
 
